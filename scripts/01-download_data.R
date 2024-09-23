@@ -37,14 +37,14 @@ subway_2023 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
   filter(name == "ttc-subway-delay-data-2023") |>
   get_resource()
 
-subway_2024 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
-  filter(name == "ttc-subway-delay-data-2024") |>
-  get_resource()
-
-
+# subway_2024 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
+#   filter(name == "ttc-subway-delay-data-2024") |>
+#   get_resource()
 
 
 #### Save data ####
+write.csv(subway_2021, "data/raw_data/subway_2021.csv")
+write.csv(subway_2022, "data/raw_data/subway_2022.csv")
 write.csv(subway_2023, "data/raw_data/subway_2023.csv") 
 
          
