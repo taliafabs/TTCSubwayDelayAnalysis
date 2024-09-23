@@ -1,44 +1,55 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw TTC subway delay data obtained from Open Data Toronto
+# Author: Talia Fabregas
+# Date: 22 September 2024
+# Contact: talia.fabregas@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run 01-download_data.R first
+# Any other information needed? No
 
 #### Workspace setup ####
 library(tidyverse)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+raw_data_2023 <- read_csv("data/raw_data/subway_2023.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
+raw_data_2023 <- raw_data_2023 |>
+  select(Date, Time, Day, Station, `Min Delay`, `Min Gap`, Line) 
+
+# Remove missing values 
+raw_data_2023 <- raw_data_2023 |>
+  filter(!is.na(Line))
+
+# Identify subway lines 1, 2, 3, 4
+raw_data_2023 <- raw_data_2023 |>
   mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+    Line = 
+      case_match(
+        Line,
+        "YU" ~ "1",
+        "BD" ~ "2",
+        "YU/BD" ~ "1",
+        "BD/YU" ~ "2",
+        "SRT" ~ "3",
+        "SHP" ~ "4",
+        "YU / BD" ~ "1",
+        "BLOOR DANFORTH & YONGE" ~ "2",
+        "YUS/BD" ~ "1",
+        "BD LINE 2" ~ "2",
+        "999" ~ "NA",
+        "YUS" ~ "1",
+        "YU & BD" ~ "1",
+        "77 SWANSEA" ~ "NA"
+    )
+  )
+
+# Remove the NA's that came from 999 or 77 Swansea which are not TTC subway lines
+raw_data_2023 <- raw_data_2023 |>
+  filter(Line != "NA")
+
+cleaned_data_2023 <- raw_data_2023 |>
+  mutate(Station = str_replace(Station, " STATION", ""))
+
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data_2023, "data/analysis_data/cleaned_data_2023.csv")
