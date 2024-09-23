@@ -24,15 +24,21 @@ library(readxl)
 # 
 # subway_2020 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
 #   filter(name == "ttc-subway-delay-data-2020")
-# 
-# subway_2021 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
-#   filter(name == "ttc-subway-delay-data-2021")
-# 
-# subway_2022 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
-#   filter(name == "ttc-subway-delay-data-2022")
+
+subway_2021 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
+  filter(name == "ttc-subway-delay-data-2021") |>
+  get_resource()
+
+subway_2022 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
+  filter(name == "ttc-subway-delay-data-2022") |>
+  get_resource()
 
 subway_2023 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
   filter(name == "ttc-subway-delay-data-2023") |>
+  get_resource()
+
+subway_2024 <- list_package_resources("996cfe8d-fb35-40ce-b569-698d51fc683b") |>
+  filter(name == "ttc-subway-delay-data-2024") |>
   get_resource()
 
 
