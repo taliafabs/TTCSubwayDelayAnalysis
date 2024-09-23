@@ -31,12 +31,15 @@ delay_reasons <- c("Mechanical Issue", "Trespasser on Tracks", "Weather",
                    "Operational Issue", "Signal Issue", "Power Outage")
 num_sims = 500
 
+# Simulate 500 subway delays in 2023
 simulated_data <- tibble(
-  # Simulate 500 subway delays
   date = sample(seq.Date(start_date, end_date, by = "day"), num_sims, replace=TRUE),
   station = sample(subway_stations, num_sims, replace=TRUE),
   start_time = sprintf("%02d:%02d", sample(0:23, num_sims, replace=TRUE), sample(0:59, num_sims, replace=TRUE)),
   duration = sample(2:60, num_sims, replace = TRUE),
   reason = sample(delay_reasons, num_sims, replace=TRUE)
 )
+
+# Save the simulated data
+write_csv(simulated_data, "data/raw_data/simulated_data.csv")
 
